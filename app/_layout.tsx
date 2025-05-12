@@ -1,11 +1,11 @@
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "@/lib/client/react-query";
+import { queryClient } from "@/lib/queryClient";
 
 export default function Layout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack />
+      <Slot />
     </QueryClientProvider>
   );
 }
