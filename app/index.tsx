@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { ArticleItem } from '@/features/articles/components/ArticleItem';
 import { useArticleContext } from '@/features/articles/storage/ArticleContext';
+import { Link } from 'expo-router';
 
 export default function ArticleListScreen() {
   const { data, isLoading, refetch, isRefetching, isError } = useArticles();
@@ -22,20 +23,27 @@ export default function ArticleListScreen() {
   if (isError) return <Text>Failed to load articles.</Text>;
 
   return (
-    <FlatList
-      data={filteredData}
-      keyExtractor={(item) => item.objectID}
-      renderItem={({ item }) => (
-        <ArticleItem
-          article={item}
-          isFavorited={isFavorited(item.objectID)}
-          onToggleFavorite={() => toggleFavorite(item.objectID)}
-          onDelete={() => deleteArticle(item.objectID)}
-        />
-      )}
-      refreshControl={
-        <RefreshControl refreshing={refreshing || isRefetching} onRefresh={onRefresh} />
-      }
-    />
+    <>
+      <Link href="/favorites">
+        <Text style={{ padding: 16 }}>View Favorites</Text>
+      </Link>
+
+      <FlatList
+        data={filteredData}
+        keyExtractor={(item) => item.objectID}
+        renderItem={({ item }) => (
+          <ArticleItem
+            article={item}
+            isFavorited={isFavorited(item.objectID)}
+            onToggleFavorite={() => toggleFavorite(item.objectID)}
+            onDelete={() => deleteArticle(item.objectID)}
+          />
+        )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing || isRefetching} onRefresh={onRefresh} />
+        }
+      />
+    </>
+
   );
 }
