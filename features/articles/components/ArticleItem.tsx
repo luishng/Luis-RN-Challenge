@@ -28,7 +28,7 @@ export function ArticleItem({
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <Link href={`/article/${article.objectID}`} asChild>
         <Pressable style={{ flex: 1, padding: 16, borderBottomWidth: 1, backgroundColor: 'white' }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{title}</Text>
+          <Text style={[{ fontWeight: 'bold', fontSize: 16 }, article.url && { color: 'blue' }]}>{title}</Text>
           <Text style={{ fontSize: 12, color: 'gray' }}>
             {article.author} – {timeAgo}
           </Text>
