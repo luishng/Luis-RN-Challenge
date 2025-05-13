@@ -1,50 +1,74 @@
-import { FlatList, Text, View, ActivityIndicator, RefreshControl } from 'react-native';
-import { useArticles } from '../features/articles/hooks/useArticles';
-import { useArticleContext } from '../features/articles/storage/ArticleContext';
-import { ArticleItem } from '../features/articles/components/ArticleItem';
-import { useState } from 'react';
+import { FlatList, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+
+import { THEME } from '@/styles/theme';
+import { Header } from '@/components/Header';
+import { useArticles } from '@/features/articles/hooks/useArticles';
+import { ArticleItem } from '@/features/articles/components/ArticleItem';
+import { useArticleContext } from '@/features/articles/storage/ArticleContext';
+import { NoContent } from '@/components/NoContent';
 
 export default function FavoritesScreen() {
-  const { data, isLoading, isError, refetch, isRefetching } = useArticles();
-  const { isFavorited, isDeleted, toggleFavorite, deleteArticle } = useArticleContext();
-  const [refreshing, setRefreshing] = useState(false);
+  const { data } = useArticles();
+  const { isFavorited, isDeleted, toggleFavorite } = useArticleContext();
 
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  };
-
-  if (isLoading) return <ActivityIndicator />;
-  if (isError) return <Text>Failed to load articles.</Text>;
+  const router = useRouter();
 
   const filteredData = data?.filter(
     (item) => isFavorited(item.objectID) && !isDeleted(item.objectID)
   );
 
-  if (!filteredData || filteredData.length === 0) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>No favorited articles yet.</Text>
-      </View>
-    );
-  }
-
   return (
-    <FlatList
-      data={filteredData}
-      keyExtractor={(item) => item.objectID}
-      renderItem={({ item }) => (
-        <ArticleItem
-          article={item}
-          isFavorited={isFavorited(item.objectID)}
-          onToggleFavorite={() => toggleFavorite(item.objectID)}
-          onDelete={() => deleteArticle(item.objectID)}
+    <View style={styles.container}>
+      <Header.Root>
+        <Header.Title title="Hacker News" />
+
+        <Header.Action>
+          <TouchableOpacity
+            onPress={() => router.back()}>
+            <Ionicons name="home" size={28} color="white" />
+          </TouchableOpacity>
+        </Header.Action >
+      </Header.Root>
+
+      {!filteredData || filteredData.length === 0 ? (
+        <NoContent text='No favorited articles yet.' />
+      ) : (
+        <FlatList
+          data={filteredData}
+          keyExtractor={(item) => item.objectID}
+          contentContainerStyle={styles.articleCards}
+          renderItem={({ item }) => (
+            <ArticleItem
+              article={item}
+              isFavorited={isFavorited(item.objectID)}
+              onToggleFavorite={() => toggleFavorite(item.objectID)}
+            />
+          )}
         />
       )}
-      refreshControl={
-        <RefreshControl refreshing={refreshing || isRefetching} onRefresh={onRefresh} />
-      }
-    />
+    </View>
   );
 }
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: THEME.COLORS.GREY_800,
+  },
+  containerError: {
+    flex: 1,
+    backgroundColor: THEME.COLORS.GREY_800,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  articleCards: {
+    paddingTop: 32,
+    paddingBottom: 32,
+    paddingHorizontal: 16,
+  },
+  textError: {
+    color: THEME.COLORS.WHITE
+  },
+});

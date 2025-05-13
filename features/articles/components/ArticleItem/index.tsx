@@ -1,22 +1,22 @@
 import { View, Text, Pressable } from 'react-native';
-import { Article } from '../model/article';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 
+import { styles } from './styles';
+import { Article } from '../../model/article';
+
 interface Props {
   article: Article;
   isFavorited: boolean;
   onToggleFavorite: () => void;
-  onDelete: () => void;
 }
 
 export function ArticleItem({
   article,
   isFavorited,
   onToggleFavorite,
-  onDelete,
 }: Props) {
   const title = article.story_title || article.title || 'No title';
   const timeAgo = formatDistanceToNow(new Date(article.created_at), {
@@ -25,25 +25,25 @@ export function ArticleItem({
   });
 
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <View style={styles.container}>
       <Link href={`/article/${article.objectID}`} asChild>
-        <Pressable style={{ flex: 1, padding: 16, borderBottomWidth: 1, backgroundColor: 'white' }}>
-          <Text style={[{ fontWeight: 'bold', fontSize: 16 }, article.url && { color: 'blue' }]}>{title}</Text>
-          <Text style={{ fontSize: 12, color: 'gray' }}>
+        <Pressable style={styles.content}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>
             {article.author} – {timeAgo}
           </Text>
         </Pressable>
       </Link>
-      <Pressable onPress={onToggleFavorite} style={{ padding: 8 }}>
-        <Ionicons
-          name={isFavorited ? 'star' : 'star-outline'}
-          size={20}
-          color="gold"
-        />
-      </Pressable>
-      <Pressable onPress={onDelete} style={{ padding: 8 }}>
-        <Ionicons name="trash-outline" size={20} color="red" />
-      </Pressable>
+
+      <View style={styles.actions}>
+        <Pressable onPress={onToggleFavorite} style={styles.icon}>
+          <Ionicons
+            name={isFavorited ? 'star' : 'star-outline'}
+            size={20}
+            color="gold"
+          />
+        </Pressable>
+      </View>
     </View>
   );
 }
