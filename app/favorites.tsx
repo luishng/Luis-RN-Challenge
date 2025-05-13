@@ -69,6 +69,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   textError: {
-    color: THEME.COLORS.WHITE
+    color: THEME.COLORS.WHITE,
+    fontFamily: THEME.FONTS.REGULAR,
   },
 });

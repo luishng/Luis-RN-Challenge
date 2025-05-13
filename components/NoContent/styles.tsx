@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     backgroundColor: THEME.COLORS.GREY_800
   },
   text: {
-    color: THEME.COLORS.WHITE
+    color: THEME.COLORS.WHITE,
+    fontFamily: THEME.FONTS.REGULAR,
   },
 });

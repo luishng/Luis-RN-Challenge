@@ -15,10 +15,12 @@ export const styles = StyleSheet.create({
   title: {
     color: THEME.COLORS.GREY_100,
     fontSize: 24,
+    fontFamily: THEME.FONTS.BOLD,
   },
   subtitle: {
     fontSize: 14,
     color: THEME.COLORS.GREY_100,
+    fontFamily: THEME.FONTS.REGULAR,
   },
   action: {
     width: 44,

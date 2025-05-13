@@ -28,7 +28,7 @@ export default function Layout() {
             backgroundColor={THEME.COLORS.GREY_600}
             translucent
           />
-          <SafeAreaView style={{ flex: 1 }}>
+          <SafeAreaView style={{ flex: 1, backgroundColor: THEME.COLORS.GREY_600 }}>
             <Slot />
           </SafeAreaView>
         </GestureHandlerRootView>

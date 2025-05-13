@@ -127,5 +127,6 @@ export const styles = StyleSheet.create({
   },
   swipeableText: {
     color: THEME.COLORS.WHITE,
+    fontFamily: THEME.FONTS.REGULAR,
   },
 });

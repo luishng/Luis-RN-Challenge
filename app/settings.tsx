@@ -68,10 +68,12 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 16,
     color: THEME.COLORS.WHITE,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontFamily: THEME.FONTS.BOLD,
   },
   text: {
     fontSize: 16,
     color: THEME.COLORS.WHITE,
+    fontFamily: THEME.FONTS.REGULAR,
   },
 });
