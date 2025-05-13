@@ -1,10 +1,13 @@
-import React from 'react';
 import { View, Text, Switch, ActivityIndicator, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import { useNotificationPreferences } from '@/features/settings/hooks/useNotificationPreferences';
+import Animated, { FadeInUp } from 'react-native-reanimated';
+
+import { THEME } from '@/styles/theme';
+import { useRouter } from 'expo-router';
 import { Header } from '@/components/Header';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { THEME } from '@/styles/theme';
+import { useNotificationPreferences } from '@/features/settings/hooks/useNotificationPreferences';
+
+const ScrollViewAnimated = Animated.createAnimatedComponent(ScrollView)
 
 export default function SettingsScreen() {
   const { preferences, togglePreference, loading } = useNotificationPreferences();
@@ -15,7 +18,7 @@ export default function SettingsScreen() {
   return (
     <View style={styles.container}>
       <Header.Root>
-        <Header.Title title="Hacker News" />
+        <Header.Title title="Settings" />
 
         <Header.Action>
           <TouchableOpacity
@@ -25,7 +28,7 @@ export default function SettingsScreen() {
         </Header.Action >
       </Header.Root>
 
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
+      <ScrollViewAnimated contentContainerStyle={{ padding: 20 }} entering={FadeInUp}>
         <Text style={styles.title}>
           Notification Preferences
         </Text>
@@ -50,7 +53,7 @@ export default function SettingsScreen() {
             />
           </View>
         ))}
-      </ScrollView>
+      </ScrollViewAnimated>
     </View>
   );
 }

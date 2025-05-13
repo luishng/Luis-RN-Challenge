@@ -21,7 +21,7 @@ export function useArticles() {
         throw new Error('Erro ao buscar artigos e nenhum cache disponível');
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 minutos
+    staleTime: 1000 * 60 * 3, // 3 minutes
     retry: 1,
   });
 }

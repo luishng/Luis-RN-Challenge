@@ -1,29 +1,28 @@
-import { FlatList, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, { LinearTransition, SlideInRight } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
-import { THEME } from '@/styles/theme';
 import { Header } from '@/components/Header';
+import { Ionicons } from '@expo/vector-icons';
 import { NoContent } from '@/components/NoContent';
 import { useArticles } from '@/features/articles/hooks/useArticles';
 import { ArticleItem } from '@/features/articles/components/ArticleItem';
 import { useArticleContext } from '@/features/articles/context/ArticleContext';
 
-export default function FavoritesScreen() {
-  const { data } = useArticles();
-  const { isFavorited, isDeleted, toggleFavorite } = useArticleContext();
+export default function DeletedArticlesScreen() {
+  const { isFavorited, isDeleted, restoreArticle } = useArticleContext();
+  const { data: articles } = useArticles();
 
   const router = useRouter();
 
-  const filteredData = data?.filter(
-    (item) => isFavorited(item.objectID) && !isDeleted(item.objectID)
+  const deletedArticles = articles?.filter((article) =>
+    isDeleted(article.objectID)
   );
 
   return (
     <View style={styles.container}>
       <Header.Root>
-        <Header.Title title="Favorites" />
+        <Header.Title title="Deleted Articles" />
 
         <Header.Action>
           <TouchableOpacity
@@ -33,13 +32,10 @@ export default function FavoritesScreen() {
         </Header.Action >
       </Header.Root>
 
-      {!filteredData || filteredData.length === 0 ? (
-        <NoContent text='No favorited articles yet.' />
-      ) : (
+      {deletedArticles?.length ? (
         <FlatList
-          data={filteredData}
+          data={deletedArticles}
           keyExtractor={(item) => item.objectID}
-          contentContainerStyle={styles.articleCards}
           renderItem={({ item }) => (
             <Animated.View
               key={item.objectID}
@@ -49,34 +45,35 @@ export default function FavoritesScreen() {
               <ArticleItem
                 article={item}
                 isFavorited={isFavorited(item.objectID)}
-                onToggleFavorite={() => toggleFavorite(item.objectID)}
+                onRestore={() => restoreArticle(item.objectID)}
               />
             </Animated.View>
           )}
+          contentContainerStyle={styles.list}
         />
+      ) : (
+        <NoContent text='No deleted articles.' />
       )}
     </View>
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.COLORS.GREY_800,
+    backgroundColor: '#1C1B1F',
   },
-  containerError: {
-    flex: 1,
-    backgroundColor: THEME.COLORS.GREY_800,
-    alignItems: 'center',
-    justifyContent: 'center'
+  list: {
+    padding: 16,
   },
-  articleCards: {
-    paddingTop: 32,
-    paddingBottom: 32,
-    paddingHorizontal: 16,
+  empty: {
+    textAlign: 'center',
+    marginTop: 48,
+    color: 'gray',
   },
-  textError: {
-    color: THEME.COLORS.WHITE,
-    fontFamily: THEME.FONTS.REGULAR,
+  backText: {
+    color: 'white',
+    fontSize: 16,
+    padding: 8,
   },
 });

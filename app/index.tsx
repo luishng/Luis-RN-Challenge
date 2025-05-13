@@ -1,16 +1,18 @@
-import { FlatList, Text, ActivityIndicator, RefreshControl, StyleSheet, SafeAreaView, Pressable, TouchableOpacity, View } from 'react-native';
-import { useArticles } from '../features/articles/hooks/useArticles';
-import { useRef, useState } from 'react';
+import { FlatList, Text, RefreshControl, StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
+import Animated, { FadeInUp, LinearTransition } from 'react-native-reanimated';
+import { Swipeable } from 'react-native-gesture-handler';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'expo-router';
 
-import { Header } from '@/components/Header';
-import { ArticleItem } from '@/features/articles/components/ArticleItem';
-import { useArticleContext } from '@/features/articles/storage/ArticleContext';
-import { Ionicons } from '@expo/vector-icons';
 import { THEME } from '@/styles/theme';
-import { Swipeable } from 'react-native-gesture-handler';
+import { Header } from '@/components/Header';
+import { Ionicons } from '@expo/vector-icons';
 import { Loading } from '@/components/Loading';
 import { NoContent } from '@/components/NoContent';
+import { useArticles } from '@/features/articles/hooks/useArticles';
+import { ArticleItem } from '@/features/articles/components/ArticleItem';
+import { requestNotificationPermission } from '@/services/notifications';
+import { useArticleContext } from '@/features/articles/context/ArticleContext';
 
 export default function ArticleListScreen() {
   const { data, isLoading, refetch, isRefetching, isError } = useArticles();
@@ -21,6 +23,10 @@ export default function ArticleListScreen() {
 
   const [refreshing, setRefreshing] = useState(false);
   const filteredData = data?.filter((item) => !isDeleted(item.objectID));
+
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -40,6 +46,21 @@ export default function ArticleListScreen() {
     );
   }
 
+  function handleDelete(id: string, index: number) {
+    swipableRefs.current?.[index].close()
+
+    Alert.alert(
+      'Delete Article',
+      'Are you sure you want to delete this article?',
+      [
+        {
+          text: 'Yes', onPress: () => deleteArticle(id)
+        },
+        { text: 'No', style: 'cancel' }
+      ]
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Header.Root>
@@ -49,6 +70,13 @@ export default function ArticleListScreen() {
           <TouchableOpacity
             onPress={() => router.push('/favorites')}>
             <Ionicons name="bookmark-outline" size={28} color="white" />
+          </TouchableOpacity>
+        </Header.Action >
+
+        <Header.Action>
+          <TouchableOpacity
+            onPress={() => router.push('/deleted')}>
+            <Ionicons name="trash-outline" size={28} color="white" />
           </TouchableOpacity>
         </Header.Action >
 
@@ -67,33 +95,39 @@ export default function ArticleListScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing || isRefetching} onRefresh={onRefresh} />
         }
-        renderItem={({ item }) => (
-          <Swipeable
-            ref={(ref) => {
-              if (ref) {
-                swipableRefs.current.push(ref)
-              }
-            }}
-            containerStyle={styles.swipeableContainer}
-            overshootRight={false}
-            rightThreshold={10}
-            shouldCancelWhenOutside={false}
-            renderLeftActions={() => null}
-            onSwipeableOpen={() => deleteArticle(item.objectID)}
-            renderRightActions={() => (
-              <View
-                style={styles.swipeableRemove}
-              >
-                <Text style={styles.swipeableText}>Delete</Text>
-              </View>
-            )}
+        renderItem={({ item, index }) => (
+          <Animated.View
+            key={item.objectID}
+            entering={FadeInUp.delay(index * 100)}
+            layout={LinearTransition.springify()}
           >
-            <ArticleItem
-              article={item}
-              isFavorited={isFavorited(item.objectID)}
-              onToggleFavorite={() => toggleFavorite(item.objectID)}
-            />
-          </Swipeable>
+            <Swipeable
+              ref={(ref) => {
+                if (ref) {
+                  swipableRefs.current.push(ref)
+                }
+              }}
+              containerStyle={styles.swipeableContainer}
+              overshootRight={false}
+              rightThreshold={10}
+              shouldCancelWhenOutside={false}
+              renderLeftActions={() => null}
+              onSwipeableOpen={() => handleDelete(item.objectID, index)}
+              renderRightActions={() => (
+                <View
+                  style={styles.swipeableRemove}
+                >
+                  <Text style={styles.swipeableText}>Delete</Text>
+                </View>
+              )}
+            >
+              <ArticleItem
+                article={item}
+                isFavorited={isFavorited(item.objectID)}
+                onToggleFavorite={() => toggleFavorite(item.objectID)}
+              />
+            </Swipeable>
+          </Animated.View>
         )}
       />
     </View>

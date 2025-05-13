@@ -6,17 +6,20 @@ import { Link } from 'expo-router';
 
 import { styles } from './styles';
 import { Article } from '../../model/article';
+import { THEME } from '@/styles/theme';
 
 interface Props {
   article: Article;
   isFavorited: boolean;
-  onToggleFavorite: () => void;
+  onToggleFavorite?: () => void;
+  onRestore?: () => void;
 }
 
 export function ArticleItem({
   article,
   isFavorited,
   onToggleFavorite,
+  onRestore,
 }: Props) {
   const title = article.story_title || article.title || 'No title';
   const timeAgo = formatDistanceToNow(new Date(article.created_at), {
@@ -35,15 +38,29 @@ export function ArticleItem({
         </Pressable>
       </Link>
 
-      <View style={styles.actions}>
-        <Pressable onPress={onToggleFavorite} style={styles.icon}>
-          <Ionicons
-            name={isFavorited ? 'star' : 'star-outline'}
-            size={20}
-            color="gold"
-          />
-        </Pressable>
-      </View>
+      {onToggleFavorite && (
+        <View style={styles.actions}>
+          <Pressable onPress={onToggleFavorite} style={styles.icon}>
+            <Ionicons
+              name={isFavorited ? 'star' : 'star-outline'}
+              size={20}
+              color="gold"
+            />
+          </Pressable>
+        </View>
+      )}
+
+      {onRestore && (
+        <View style={styles.actions}>
+          <Pressable onPress={onRestore} style={styles.icon}>
+            <Ionicons
+              name='refresh'
+              size={20}
+              color={THEME.COLORS.BRAND_LIGHT}
+            />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }

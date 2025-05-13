@@ -11,6 +11,7 @@ type ArticleContextType = {
   isDeleted: (id: string) => boolean;
   toggleFavorite: (id: string) => void;
   deleteArticle: (id: string) => void;
+  restoreArticle: (id: string) => void;
 };
 
 const ArticleContext = createContext<ArticleContextType>({} as ArticleContextType);
@@ -44,9 +45,15 @@ export const ArticleProvider = ({ children }: { children: ReactNode }) => {
     await AsyncStorage.setItem(DELETED_KEY, JSON.stringify(updated));
   };
 
+  const restoreArticle = async (id: string) => {
+    const updated = deleted.filter((item) => item !== id);
+    setDeleted(updated);
+    await AsyncStorage.setItem(DELETED_KEY, JSON.stringify(updated));
+  };
+
   const isFavorited = (id: string) => favorites.includes(id);
   const isDeleted = (id: string) => deleted.includes(id);
-  
+
   return (
     <ArticleContext.Provider
       value={{
@@ -56,6 +63,7 @@ export const ArticleProvider = ({ children }: { children: ReactNode }) => {
         isDeleted,
         toggleFavorite,
         deleteArticle,
+        restoreArticle,
       }}
     >
       {children}
