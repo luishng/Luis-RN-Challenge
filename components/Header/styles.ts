@@ -29,4 +29,14 @@ export const styles = StyleSheet.create({
     backgroundColor: THEME.COLORS.GREY_800,
     marginLeft: 12,
   },
+  backAction: {
+    width: 44,
+    height: 44,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: THEME.COLORS.GREY_800,
+    marginLeft: -24,
+    marginRight: 12,
+  },
 });

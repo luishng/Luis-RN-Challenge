@@ -21,6 +21,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  titleWithURL: {
+    color: THEME.COLORS.BRAND_LIGHT,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   subtitle: {
     color: THEME.COLORS.GREY_300,
     fontSize: 12,

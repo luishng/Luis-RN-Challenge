@@ -1,10 +1,11 @@
-import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useArticles } from '../../features/articles/hooks/useArticles';
 import { WebView } from 'react-native-webview';
 import { NoContent } from '@/components/NoContent';
 import { Header } from '@/components/Header';
 import { Ionicons } from '@expo/vector-icons';
+import { Loading } from '@/components/Loading';
 
 export default function ArticleDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -12,7 +13,11 @@ export default function ArticleDetailScreen() {
 
   const router = useRouter();
 
-  if (isLoading) return <ActivityIndicator />;
+  if (isLoading) {
+    return (
+      <Loading />
+    )
+  }
 
   const article = data?.find((item) => item.objectID === id);
 
@@ -27,21 +32,22 @@ export default function ArticleDetailScreen() {
   return (
     <View style={{ flex: 1 }}>
       <Header.Root>
-        <Header.Title title={article.url ? article.title : 'No Article'} />
+        {!article.url && <Header.Title title='No Article' />}
 
-        <Header.Action>
+        <Header.BackAction>
           <TouchableOpacity
             onPress={() => router.back()}>
-            <Ionicons name="home" size={28} color="white" />
+            <Ionicons name={article.url ? "chevron-back" : 'home'} size={28} color="white" />
           </TouchableOpacity>
-        </Header.Action >
+        </Header.BackAction >
+
+        {article.url && <Header.Title title='Back' />}
       </Header.Root>
 
       {!article.url ? (
         <NoContent text='This article does not have a valid URL.' />
       ) : (
-        <WebView source={{ uri: article.url }} startInLoadingState />
-
+        <WebView style={{ flex: 1 }} source={{ uri: article.url }} startInLoadingState />
       )}
     </View>
   );

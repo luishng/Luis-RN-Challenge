@@ -28,7 +28,7 @@ export function ArticleItem({
     <View style={styles.container}>
       <Link href={`/article/${article.objectID}`} asChild>
         <Pressable style={styles.content}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={article.url ? styles.titleWithURL : styles.title}>{title}</Text>
           <Text style={styles.subtitle}>
             {article.author} – {timeAgo}
           </Text>

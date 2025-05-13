@@ -23,17 +23,26 @@ function Title({ title }: TitleProps) {
   );
 }
 
-type ActionsProps = {
+type ActionProps = {
   children: ReactNode;
 };
 
-function Action({ children }: ActionsProps) {
+function Action({ children }: ActionProps) {
   return <View style={styles.action}>{children}</View>;
+}
+
+type BackActionProps = {
+  children: ReactNode;
+};
+
+function BackAction({ children }: BackActionProps) {
+  return <View style={styles.backAction}>{children}</View>;
 }
 
 export const Header = {
   Root,
   Title,
   Action,
+  BackAction,
 };
 
