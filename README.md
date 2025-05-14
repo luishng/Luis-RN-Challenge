@@ -25,8 +25,12 @@ A mobile app built with Expo Router and TypeScript that fetches articles from Ha
 - **expo-background-fetch**
 - **Jest + Testing Library**
 
-## 🚀 Getting Started
+## Getting Started
 
 ```bash
 npm install
 npx expo run:android  # or `npx expo run:ios`
+
+## Running Tests
+npm test
+npm run coverage
