@@ -8,7 +8,7 @@ type HeaderRootProps = {
 };
 
 function Root({ children, style }: HeaderRootProps) {
-  return <View style={[styles.container, style]}>{children}</View>;
+  return <View testID="header-root" style={[styles.container, style]}>{children}</View>;
 }
 
 type TitleProps = {

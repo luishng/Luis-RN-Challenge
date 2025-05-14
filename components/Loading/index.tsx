@@ -6,7 +6,7 @@ import { styles } from "./styles";
 export function Loading() {
   return (
     <View style={styles.container}>
-      <ActivityIndicator color={THEME.COLORS.BRAND_LIGHT} />
+      <ActivityIndicator testID="loading-indicator" color={THEME.COLORS.BRAND_LIGHT} />
     </View>
   );
 }
