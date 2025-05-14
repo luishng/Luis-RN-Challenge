@@ -13,6 +13,8 @@ import { useArticles } from '@/features/articles/hooks/useArticles';
 import { ArticleItem } from '@/features/articles/components/ArticleItem';
 import { requestNotificationPermission } from '@/services/notifications';
 import { useArticleContext } from '@/features/articles/context/ArticleContext';
+import { registerBackgroundCheck } from '@/libs/notifications/backgroundTask';
+import { addNotificationResponseReceivedListener } from 'expo-notifications';
 
 export default function ArticleListScreen() {
   const { data, isLoading, refetch, isRefetching, isError } = useArticles();
@@ -26,6 +28,18 @@ export default function ArticleListScreen() {
 
   useEffect(() => {
     requestNotificationPermission();
+    registerBackgroundCheck();
+  }, []);
+
+  useEffect(() => {
+    const sub = addNotificationResponseReceivedListener((response) => {
+      const articleId = response.notification.request.content.data?.objectID;
+      if (articleId) {
+        router.push(`/article/${articleId}`);
+      }
+    });
+
+    return () => sub.remove();
   }, []);
 
   const onRefresh = async () => {
@@ -33,8 +47,6 @@ export default function ArticleListScreen() {
     await refetch();
     setRefreshing(false);
   };
-
-
 
   if (isError) {
     return (

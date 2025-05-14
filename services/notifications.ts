@@ -3,10 +3,9 @@ import * as Device from 'expo-device';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowBanner: true,
+    shouldShowAlert: true,
     shouldPlaySound: false,
     shouldSetBadge: false,
-    shouldShowList: false
   }),
 });
 

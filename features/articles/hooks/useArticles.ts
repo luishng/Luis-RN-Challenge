@@ -41,7 +41,7 @@ export function useArticles() {
         throw new Error('Error fetching articles and no cache available');
       }
     },
-    staleTime: 1000 * 60 * 3, // 3 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
     retry: 1,
   });
 }

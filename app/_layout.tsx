@@ -1,8 +1,8 @@
-import { Slot } from "expo-router";
+import { Slot, useRouter } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 
-import { queryClient } from "@/lib/queryClient";
+import { queryClient } from "@/libs/queryClient";
 import { ArticleProvider } from "@/features/articles/context/ArticleContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
