@@ -41,7 +41,11 @@ export function ArticleItem({
 
       {onToggleFavorite && (
         <View style={styles.actions}>
-          <Pressable onPress={onToggleFavorite} style={styles.icon}>
+          <Pressable
+            onPress={onToggleFavorite}
+            style={styles.icon}
+            testID="favorite-button"
+          >
             <Ionicons
               name={isFavorited ? 'star' : 'star-outline'}
               size={20}
@@ -53,7 +57,11 @@ export function ArticleItem({
 
       {onRestore && (
         <View style={styles.actions}>
-          <Pressable onPress={onRestore} style={styles.icon}>
+          <Pressable
+            onPress={onRestore}
+            style={styles.icon}
+            testID="restore-button"
+          >
             <Ionicons
               name='refresh'
               size={20}
