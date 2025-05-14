@@ -22,9 +22,17 @@ export function useArticles() {
     queryKey: ['articles', query],
     queryFn: async () => {
       try {
-        const data = await fetchArticles(query);
-        await cacheArticles(data);
-        return data;
+        const fresh = await fetchArticles(query);
+        const previous = await getCachedArticles();
+
+        const map = new Map<string, Article>();
+        (previous ?? []).forEach((a) => map.set(a.objectID, a));
+        fresh.forEach((a) => map.set(a.objectID, a));
+
+        const merged = Array.from(map.values());
+        await cacheArticles(merged);
+
+        return merged;
       } catch (err) {
         const cached = await getCachedArticles();
         if (cached) {

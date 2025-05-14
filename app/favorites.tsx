@@ -6,19 +6,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { THEME } from '@/styles/theme';
 import { Header } from '@/components/Header';
 import { NoContent } from '@/components/NoContent';
-import { useArticles } from '@/features/articles/hooks/useArticles';
 import { ArticleItem } from '@/features/articles/components/ArticleItem';
 import { useArticleContext } from '@/features/articles/context/ArticleContext';
+import { useFavoriteArticles } from '@/features/articles/hooks/useFavoriteArticles';
 
 export default function FavoritesScreen() {
-  const { data } = useArticles();
-  const { isFavorited, isDeleted, toggleFavorite } = useArticleContext();
+  const { articles, loading } = useFavoriteArticles();
+  const { isFavorited, toggleFavorite } = useArticleContext();
 
   const router = useRouter();
-
-  const filteredData = data?.filter(
-    (item) => isFavorited(item.objectID) && !isDeleted(item.objectID)
-  );
 
   return (
     <View style={styles.container}>
@@ -26,18 +22,17 @@ export default function FavoritesScreen() {
         <Header.Title title="Favorites" />
 
         <Header.Action>
-          <TouchableOpacity
-            onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="home" size={28} color="white" />
           </TouchableOpacity>
-        </Header.Action >
+        </Header.Action>
       </Header.Root>
 
-      {!filteredData || filteredData.length === 0 ? (
-        <NoContent text='No favorited articles yet.' />
+      {loading || articles.length === 0 ? (
+        <NoContent text="No favorited articles yet." />
       ) : (
         <FlatList
-          data={filteredData}
+          data={articles}
           keyExtractor={(item) => item.objectID}
           contentContainerStyle={styles.articleCards}
           renderItem={({ item }) => (
@@ -59,24 +54,14 @@ export default function FavoritesScreen() {
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: THEME.COLORS.GREY_800,
-  },
-  containerError: {
-    flex: 1,
-    backgroundColor: THEME.COLORS.GREY_800,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
   articleCards: {
     paddingTop: 32,
     paddingBottom: 32,
     paddingHorizontal: 16,
-  },
-  textError: {
-    color: THEME.COLORS.WHITE,
-    fontFamily: THEME.FONTS.REGULAR,
   },
 });
