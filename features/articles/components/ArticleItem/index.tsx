@@ -21,7 +21,8 @@ export function ArticleItem({
   onToggleFavorite,
   onRestore,
 }: Props) {
-  const title = article.story_title || article.title || 'No title';
+  const title = article.url ? article.title : article.story_title;
+
   const timeAgo = formatDistanceToNow(new Date(article.created_at), {
     addSuffix: true,
     locale: enUS,

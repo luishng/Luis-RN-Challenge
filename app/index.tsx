@@ -34,11 +34,7 @@ export default function ArticleListScreen() {
     setRefreshing(false);
   };
 
-  if (isLoading) {
-    return (
-      <Loading />
-    )
-  }
+
 
   if (isError) {
     return (
@@ -88,48 +84,51 @@ export default function ArticleListScreen() {
         </Header.Action >
       </Header.Root>
 
-      <FlatList
-        data={filteredData}
-        keyExtractor={(item) => item.objectID}
-        contentContainerStyle={styles.articleCards}
-        refreshControl={
-          <RefreshControl refreshing={refreshing || isRefetching} onRefresh={onRefresh} />
-        }
-        renderItem={({ item, index }) => (
-          <Animated.View
-            key={item.objectID}
-            entering={FadeInUp.delay(index * 100)}
-            layout={LinearTransition.springify()}
-          >
-            <Swipeable
-              ref={(ref) => {
-                if (ref) {
-                  swipableRefs.current.push(ref)
-                }
-              }}
-              containerStyle={styles.swipeableContainer}
-              overshootRight={false}
-              rightThreshold={10}
-              shouldCancelWhenOutside={false}
-              renderLeftActions={() => null}
-              onSwipeableOpen={() => handleDelete(item.objectID, index)}
-              renderRightActions={() => (
-                <View
-                  style={styles.swipeableRemove}
-                >
-                  <Text style={styles.swipeableText}>Delete</Text>
-                </View>
-              )}
+      {isLoading ? (
+        <Loading />
+      ) :
+        <FlatList
+          data={filteredData}
+          keyExtractor={(item) => item.objectID}
+          contentContainerStyle={styles.articleCards}
+          refreshControl={
+            <RefreshControl refreshing={refreshing || isRefetching} onRefresh={onRefresh} />
+          }
+          renderItem={({ item, index }) => (
+            <Animated.View
+              key={item.objectID}
+              entering={FadeInUp.delay(index * 100)}
+              layout={LinearTransition.springify()}
             >
-              <ArticleItem
-                article={item}
-                isFavorited={isFavorited(item.objectID)}
-                onToggleFavorite={() => toggleFavorite(item.objectID)}
-              />
-            </Swipeable>
-          </Animated.View>
-        )}
-      />
+              <Swipeable
+                ref={(ref) => {
+                  if (ref) {
+                    swipableRefs.current.push(ref)
+                  }
+                }}
+                containerStyle={styles.swipeableContainer}
+                overshootRight={false}
+                rightThreshold={10}
+                shouldCancelWhenOutside={false}
+                renderLeftActions={() => null}
+                onSwipeableOpen={() => handleDelete(item.objectID, index)}
+                renderRightActions={() => (
+                  <View
+                    style={styles.swipeableRemove}
+                  >
+                    <Text style={styles.swipeableText}>Delete</Text>
+                  </View>
+                )}
+              >
+                <ArticleItem
+                  article={item}
+                  isFavorited={isFavorited(item.objectID)}
+                  onToggleFavorite={() => toggleFavorite(item.objectID)}
+                />
+              </Swipeable>
+            </Animated.View>
+          )}
+        />}
     </View>
   );
 }

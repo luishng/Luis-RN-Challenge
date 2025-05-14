@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import { NotificationPreferences } from '../model/NotificationPreferences';
-
-const STORAGE_KEY = 'notification_preferences';
+import {
+  getNotificationPreferences,
+  setNotificationPreferences,
+} from '../storage/notificationPreferencesStorage';
 
 export const defaultPreferences: NotificationPreferences = {
   android: true,
@@ -15,30 +15,27 @@ export function useNotificationPreferences() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadPreferences = async () => {
+    const load = async () => {
       try {
-        const json = await AsyncStorage.getItem(STORAGE_KEY);
-        if (json) {
-          const parsed = JSON.parse(json);
-          setPreferences(parsed);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar preferências:', error);
+        const stored = await getNotificationPreferences();
+        if (stored) setPreferences(stored);
+      } catch (e) {
+        console.error('Failed to load preferences', e);
       } finally {
         setLoading(false);
       }
     };
 
-    loadPreferences();
+    load();
   }, []);
 
   const togglePreference = async (key: keyof NotificationPreferences) => {
     const updated = { ...preferences, [key]: !preferences[key] };
     setPreferences(updated);
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    } catch (error) {
-      console.error('Erro ao salvar preferências:', error);
+      await setNotificationPreferences(updated);
+    } catch (e) {
+      console.error('Failed to save preferences', e);
     }
   };
 

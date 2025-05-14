@@ -1,24 +1,36 @@
 import { useQuery } from '@tanstack/react-query';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fetchArticles } from '../api/fetchArticles';
-import { Article } from '../model/article';
 
-const CACHE_KEY = 'articles_cache';
+import { Article } from '../model/article';
+import { fetchArticles } from '../api/fetchArticles';
+
+import { cacheArticles, getCachedArticles } from '../storage/articleStorage';
+
+import { useNotificationPreferences } from '@/features/notificationsPreference/hooks/useNotificationPreferences';
 
 export function useArticles() {
+  const { preferences } = useNotificationPreferences();
+
+  const query = preferences.android && preferences.ios
+    ? 'mobile'
+    : preferences.android
+      ? 'android'
+      : preferences.ios
+        ? 'ios'
+        : 'mobile';
+
   return useQuery<Article[]>({
-    queryKey: ['articles'],
+    queryKey: ['articles', query],
     queryFn: async () => {
       try {
-        const data = await fetchArticles();
-        await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        const data = await fetchArticles(query);
+        await cacheArticles(data);
         return data;
       } catch (err) {
-        const cached = await AsyncStorage.getItem(CACHE_KEY);
+        const cached = await getCachedArticles();
         if (cached) {
-          return JSON.parse(cached) as Article[];
+          return cached;
         }
-        throw new Error('Erro ao buscar artigos e nenhum cache disponível');
+        throw new Error('Error fetching articles and no cache available');
       }
     },
     staleTime: 1000 * 60 * 3, // 3 minutes
