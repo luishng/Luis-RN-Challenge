@@ -31,6 +31,6 @@ A mobile app built with Expo Router and TypeScript that fetches articles from Ha
 npm install
 npx expo run:android  # or `npx expo run:ios`
 
-## Running Tests
+-- Running Tests --
 npm test
 npm run coverage
