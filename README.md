@@ -6,12 +6,16 @@
 
 A mobile app built with Expo Router and TypeScript that fetches articles from Hacker News with offline support, favorites, deleted view, and push notifications.
 
-<h1 align="center">
+<div align="center">
   <img width="200px" height="350px" src=".github/Home.png" alt="Home">
   <img width="200px" height="350px"src=".github/Favorites.png" alt="Favorites">
-  <img width="200px" height="350px"src=".github/Deleted-Articles.png" alt="Deleted Articles">
-  <img width="200px" height="350px"src=".github/Notification-preferences.png" alt="Notification Preferences">
-</h1>
+</div>
+
+<div align="center">
+  <img width="200px" height="350px" src=".github/Deleted.png" alt="Deleted Articles">
+  <img width="200px" height="350px" src=".github/Notification.png" alt="Notification Preferences">
+</div>
+
 
 
 ## Features

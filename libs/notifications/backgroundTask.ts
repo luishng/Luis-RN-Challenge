@@ -31,7 +31,7 @@ TaskManager.defineTask(TASK_NAME, async (): Promise<'newData' | 'noData' | 'fail
     const newArticles = fresh.filter((a) => !cachedIDs.has(a.objectID));
 
     if (newArticles.length > 0) {
-      const first = newArticles[0];
+      const first = newArticles[0]; // I'm just making 1, because the api sometimes send +10 new elements.
       await Notifications.scheduleNotificationAsync({
         content: {
           title: first.url ? first.title : first.story_title || 'New article!',
