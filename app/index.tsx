@@ -12,9 +12,9 @@ import { Loading } from '@/components/Loading';
 import { NoContent } from '@/components/NoContent';
 import { useArticles } from '@/features/articles/hooks/useArticles';
 import { ArticleItem } from '@/features/articles/components/ArticleItem';
-import { requestNotificationPermission } from '@/services/notifications';
 import { useArticleContext } from '@/features/articles/context/ArticleContext';
 import { registerBackgroundCheck } from '@/libs/notifications/backgroundTask';
+import { requestNotificationPermission } from '@/libs/notifications/requestPermission';
 
 export default function ArticleListScreen() {
   const { data, isLoading, refetch, isRefetching, isError } = useArticles();

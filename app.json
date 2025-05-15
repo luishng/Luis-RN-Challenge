@@ -15,6 +15,11 @@
     },
     "ios": {
       "supportsTablet": true,
+      "icon": {
+        "light": "./assets/icons/ios-dark.png",
+        "dark": "./assets/icons/ios-light.png",
+        "tinted": "./assets/icons/ios-tinted.png"
+      },
       "infoPlist": {
         "UIBackgroundModes": [
           "fetch"
@@ -23,8 +28,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "backgroundColor": "#202024"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.luishng.LuisRNChallenge"
@@ -36,6 +41,18 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#202024",
+          "image": "./assets/icons/splash-icon-dark.png",
+          "dark": {
+            "image": "./assets/icons/splash-icon-light.png",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 200
+        }
+      ],
       [
         "expo-notifications",
         {

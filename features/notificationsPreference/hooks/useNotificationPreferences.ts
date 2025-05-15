@@ -20,7 +20,7 @@ export function useNotificationPreferences() {
         const stored = await getNotificationPreferences();
         if (stored) setPreferences(stored);
       } catch (e) {
-        console.error('Failed to load preferences', e);
+        console.log('Failed to load preferences', e);
       } finally {
         setLoading(false);
       }
@@ -35,7 +35,7 @@ export function useNotificationPreferences() {
     try {
       await setNotificationPreferences(updated);
     } catch (e) {
-      console.error('Failed to save preferences', e);
+      console.log('Failed to save preferences', e);
     }
   };
 

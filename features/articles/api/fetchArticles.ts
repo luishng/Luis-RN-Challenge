@@ -6,7 +6,7 @@ export async function fetchArticles(query: string = 'mobile'): Promise<Article[]
   const parsed = ArticlesResponseSchema.safeParse(response.data);
 
   if (!parsed.success) {
-    console.error('Invalid API response', parsed.error);
+    console.log('Invalid API response', parsed.error);
     throw new Error('Invalid API response');
   }
 

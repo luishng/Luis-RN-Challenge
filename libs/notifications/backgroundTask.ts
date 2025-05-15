@@ -50,7 +50,6 @@ TaskManager.defineTask(TASK_NAME, async (): Promise<'newData' | 'noData' | 'fail
 
     return 'noData';
   } catch (error) {
-    console.log('[BG Task] Erro ao executar tarefa:', error);
     return 'failed';
   }
 });
@@ -60,7 +59,7 @@ export async function registerBackgroundCheck() {
   if (!isRegistered) {
     await BackgroundFetch.registerTaskAsync(TASK_NAME, {
       // minimumInterval: 15 * 60, // 15 minutes
-      minimumInterval: 10, // 10 seconds (Just for Development)
+      minimumInterval: 10, // 10 seconds (Just for Testing)
       stopOnTerminate: false,
       startOnBoot: true,
     });
