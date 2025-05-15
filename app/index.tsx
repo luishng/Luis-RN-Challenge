@@ -1,4 +1,5 @@
 import { FlatList, Text, RefreshControl, StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
+import { addNotificationResponseReceivedListener, Subscription } from 'expo-notifications';
 import Animated, { FadeInUp, LinearTransition } from 'react-native-reanimated';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useEffect, useRef, useState } from 'react';
@@ -14,7 +15,6 @@ import { ArticleItem } from '@/features/articles/components/ArticleItem';
 import { requestNotificationPermission } from '@/services/notifications';
 import { useArticleContext } from '@/features/articles/context/ArticleContext';
 import { registerBackgroundCheck } from '@/libs/notifications/backgroundTask';
-import { addNotificationResponseReceivedListener } from 'expo-notifications';
 
 export default function ArticleListScreen() {
   const { data, isLoading, refetch, isRefetching, isError } = useArticles();
@@ -22,6 +22,8 @@ export default function ArticleListScreen() {
 
   const router = useRouter();
   const swipableRefs = useRef<Swipeable[]>([])
+  const pendingIdRef = useRef<string | null>(null);
+  const listenerRef = useRef<Subscription | null>(null);
 
   const [refreshing, setRefreshing] = useState(false);
   const filteredData = data?.filter((item) => !isDeleted(item.objectID));
@@ -32,15 +34,30 @@ export default function ArticleListScreen() {
   }, []);
 
   useEffect(() => {
-    const sub = addNotificationResponseReceivedListener((response) => {
+    listenerRef.current = addNotificationResponseReceivedListener((response) => {
       const articleId = response.notification.request.content.data?.objectID;
       if (articleId) {
-        router.push(`/article/${articleId}`);
+        pendingIdRef.current = articleId;
+        onRefresh()
       }
     });
 
-    return () => sub.remove();
+    return () => {
+      listenerRef.current?.remove();
+    };
   }, []);
+
+  useEffect(() => {
+    if (
+      pendingIdRef.current &&
+      !isLoading &&
+      !isRefetching &&
+      filteredData?.some(article => article.objectID === pendingIdRef.current)
+    ) {
+      router.push(`/article/${pendingIdRef.current}`);
+      pendingIdRef.current = null;
+    }
+  }, [isLoading, filteredData, isRefetching]);
 
   const onRefresh = async () => {
     setRefreshing(true);

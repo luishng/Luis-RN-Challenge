@@ -23,25 +23,28 @@ export function useArticles() {
     queryFn: async () => {
       try {
         const fresh = await fetchArticles(query);
-        const previous = await getCachedArticles();
+        const cached = await getCachedArticles();
 
-        const map = new Map<string, Article>();
-        (previous ?? []).forEach((a) => map.set(a.objectID, a));
-        fresh.forEach((a) => map.set(a.objectID, a));
+        const newArticles = fresh.filter(
+          (a) => !cached?.some((b) => b.objectID === a.objectID)
+        );
 
-        const merged = Array.from(map.values());
-        await cacheArticles(merged);
+        if (newArticles.length > 0) {
+          const updated = [...newArticles, ...(cached ?? [])];
+          await cacheArticles(updated);
+          return updated;
+        }
 
-        return merged;
+        return cached ?? [];
       } catch (err) {
         const cached = await getCachedArticles();
         if (cached) {
           return cached;
         }
-        throw new Error('Error fetching articles and no cache available');
+        throw new Error('No connection and no cached data available.');
       }
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
     retry: 1,
   });
 }

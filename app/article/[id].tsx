@@ -32,7 +32,7 @@ export default function ArticleDetailScreen() {
   return (
     <View style={{ flex: 1 }}>
       <Header.Root>
-        {!article.url && <Header.Title title='No Article' />}
+        {!article.url && <Header.Title title={article.story_title} />}
 
         <Header.BackAction>
           <TouchableOpacity
